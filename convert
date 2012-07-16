@@ -1,0 +1,4 @@
+#!/bin/sh
+
+OUTPUT=`echo -n $1 | sed 's/\(.*\)\.\(.*\)/\1/g'`.mp4
+echo $OUTPUT
