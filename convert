@@ -4,7 +4,6 @@ set -u
 
 function cleanExit()
 {
-  exit 2
   rm $TMP_AUDIO
   rm $TMP_SPED
   rm $TMP_SHIFTED
@@ -20,13 +19,14 @@ TMP_AUDIO=audio.wav
 TMP_SPED=sped.wav
 TMP_SHIFTED=shifted.wav
 
-OUTPUT=`echo -n $1 | sed 's/\(.*\)\.\(.*\)/\1/g'`.mp4
-mplayer $1 -novideo -ao pcm:file=$TMP_AUDIO || cleanExit 1
+OUTPUT=$(echo -n $(basename "$1") | sed 's/\(.*\)\.\(.*\)/\1/g').mp4
+
+mplayer "$1" -novideo -ao pcm:file=$TMP_AUDIO || cleanExit 1
 speed 1001/960 $TMP_AUDIO $TMP_SPED || cleanExit 1
 sox -S $TMP_SPED $TMP_SHIFTED pitch -72.4 || cleanExit 1
 
-mplayer -nosound -benchmark -really-quiet -vo yuv4mpeg:file=/dev/stdout $1 | \
+mplayer -nosound -benchmark -really-quiet -vf scale=1280:-10 -vo yuv4mpeg:file=/dev/stdout "$1" | \
 yuvfps -r 25:1 -c 1 2> /dev/null | \
-ffmpeg -y -i - -i $TMP_SHIFTED -map 0:0 -map 1:0 -qscale 4 -acodec ac3 $OUTPUT
+ffmpeg -y -i - -i $TMP_SHIFTED -map 0:0 -map 1:0 -q:v 4 -acodec ac3 $OUTPUT
 
 cleanExit 0
