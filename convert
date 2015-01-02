@@ -26,7 +26,6 @@ speed 1001/960 $TMP_AUDIO $TMP_SPED || cleanExit 1
 sox -S $TMP_SPED $TMP_SHIFTED pitch -72.4 || cleanExit 1
 
 mplayer -nosound -benchmark -really-quiet -vo yuv4mpeg:file=/dev/stdout --ass-force-style=Default.BackgroundColour=H77444444 "$1" | \
-yuvfps -r 25:1 -c 1 2> /dev/null | \
-ffmpeg -y -i - -i $TMP_SHIFTED -map 0:0 -map 1:0 -q:v 4 -b:a 128k -strict -2 "$OUTPUT"
+ffmpeg -y -r 25 -i - -i $TMP_SHIFTED -map 0:0 -map 1:0 -q:v 4 -b:a 128k -strict -2 "$OUTPUT"
 
 cleanExit 0
