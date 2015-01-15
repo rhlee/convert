@@ -21,7 +21,7 @@ TMP_SHIFTED=shifted.wav
 
 OUTPUT=$(echo -n $(basename "$1") | sed 's/\(.*\)\.\(.*\)/\1/g').mp4
 
-mpv "$1" --no-video -ao pcm:file=$TMP_AUDIO || cleanExit 1
+mpv "$1" --no-video --audio-channels=2 -ao pcm:file=$TMP_AUDIO || cleanExit 1
 speed 1001/960 $TMP_AUDIO $TMP_SPED || cleanExit 1
 sox -S $TMP_SPED $TMP_SHIFTED pitch -72.4 || cleanExit 1
 
